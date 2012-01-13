@@ -1,0 +1,52 @@
+This app is an autocomplete example using redis.
+
+Part I: redis and new rails app
+
+$ brew install redis
+$ rails new soulmate_example
+$ cd soulmate_example
+
+update Gemfile:
+gem 'soulmate'
+gem 'faker'
+gem 'json', '1.4.6' # kinda blows you have to use this old version
+gem 'SystemTimer'   # prevents redis from hanging
+
+$ bundle update
+
+Part II: create model and test data using Faker
+$ rails g model person name:string
+
+In db/seeds.rb
+1000.times do
+  Person.create :name => "#{Faker::Name.first_name} #{Faker::Name.last_name}"
+end
+
+$ rake db:migrate
+$ rake db:seed
+
+Part III: callback for loading the data into Redis
+
+class Person < ActiveRecord::Base
+  after_save :load_into_soulmate
+
+  def load_into_soulmate
+    loader = Soulmate::Loader.new("person")
+    loader.add("term" => name, "id" => id)
+  end
+end
+
+# in another terminal:
+$ redis-server
+
+$ rake db:reset
+
+$ redis-cli
+redis 127.0.0.1:6379> hget soulmate-data:person 1
+"{\"term\":\"Porter Harber\",\"id\":1}"
+redis 127.0.0.1:6379> hget soulmate-data:person 2
+"{\"term\":\"Alec Ritchie\",\"id\":2}"
+redis 127.0.0.1:6379> hget soulmate-data:person 3
+"{\"term\":\"Clair Oberbrunner\",\"id\":3}"
+
+Part IV: jquery
