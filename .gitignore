@@ -7,6 +7,9 @@
 # Ignore bundler config
 /.bundle
 
+# ignore vim files
+*.swp
+
 # Ignore the default SQLite database.
 /db/*.sqlite3
 
