@@ -50,3 +50,20 @@ redis 127.0.0.1:6379> hget soulmate-data:person 3
 "{\"term\":\"Clair Oberbrunner\",\"id\":3}"
 
 Part IV: jquery
+
+Go to: http://jqueryui.com/download
+De-select everything and then Select: Core, Widget, Mouse, Position, Autocomplete
+For the theme pick whatever you want, e.g. Swanky Purse
+
+$ cd ~/Downloads/jquery-ui-1
+$ cp js/* /path/to/app/assets/javascripts/.
+$ cp -r css/swanky-purse /path/to/app/assets/stylesheets/.
+
+$ rails g controller people index autocomplete_person_name
+
+
+# In config/routes.rb
+root :to => 'people#index'
+
+rm public/index.html
+

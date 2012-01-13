@@ -1,2 +1,10 @@
-<h1>People#index</h1>
-<p>Find me in app/views/people/index.html.erb</p>
+Please enter the name of a person:
+<%= text_field_tag 'person_name' %>
+
+<script>
+$(function() {
+  $("#person_name" ).autocomplete({
+    source: "<%= people_autocomplete_person_name_path %>"
+  });
+})
+</script>
