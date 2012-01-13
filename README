@@ -67,3 +67,36 @@ root :to => 'people#index'
 
 rm public/index.html
 
+update view with:
+Please enter the name of a person:
+<%= text_field_tag 'person_name' %>
+
+<script>
+$(function() {
+  $("#person_name" ).autocomplete({
+    source: "<%= people_autocomplete_person_name_path %>"
+  });
+})
+</script>
+
+
+Part V: controller and model search
+class PeopleController < ApplicationController
+  def index
+  end
+
+  def autocomplete_person_name
+    render :json => Person.search(params['term'])
+  end
+end
+
+class Person < ActiveRecord::Base
+
+  def self.search(term)
+    matches = Soulmate::Matcher.new('person').matches_for_term(term)
+    matches.collect {|match| {"id" => match["id"], "label" => match["term"], "value" => match["term"] } }
+  end
+
+This guide is based on:
+http://patshaughnessy.net/2011/11/23/finding-your-soulmate-autocomplete-with-redis-in-rails-3-1
+
